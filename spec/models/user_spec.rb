@@ -61,30 +61,30 @@ describe User do
   end
   
   describe "password validation" do
-  it "should require a password" do
+    it "should require a password" do
     User.new(@attr.merge( :password => "" , :password_confirmation => "")).
     should_not be_valid
   end
   
-  it "should reject password less than 6 chars" do
+    it "should reject password less than 6 chars" do
     short = "a"*5
     User.new(@attr.merge(:password => short, :password_confirmation => short )).
     should_not be_valid
   end
   
-  it "should reject long password" do
+    it "should reject long password" do
     long = "a"*41
     User.new(@attr.merge(:password => long, :password_confirmation => long )).
     should_not be_valid
   end
   
-  it "should match with confirm password" do
+    it "should match with confirm password" do
     User.new(@attr.merge(:password_confirmation => "invalid")).
     should_not be_valid
   end
-end
 
-describe "password encryption" do
+
+    describe "password encryption" do
 
     before(:each) do
       @user = User.create!(@attr)
@@ -97,22 +97,37 @@ describe "password encryption" do
     it "should set the encrypted password" do
       @user.encrypted_password.should_not be_blank
     end
+  
+    describe "check password" do
+  
+      it "should return false for wrong password" do
+        @user.has_password?("password1").should be_false
+      end
+  
+      it "should return true for correct password" do
+        @user.has_password?(@attr[:password]).should be_true
+      end
+    end
     
-  end
-  
-describe "check password" do
-  
-  it "should return false for wrong password" do
-    User.create!(@attr).has_password?("password1").should be_false
-  end
-  
-  it "should return true for correct password" do
-    User.create!(@attr).has_password?(@attr[:password]).should be_true
-  end
-  
-end
-  
+    describe "user authentication" do
 
+      it "should return authenticated user" do
+        User.authenticate(@attr[:email],@attr[:password]).should == @user
+      end
+
+      it "should return nil for non-authenticated user" do
+        User.authenticate(@attr[:email],"invalid").should be_nil
+      end
+
+      it "should return nil for non-authenticated user" do
+        User.authenticate("foo@bar.com",@attr[:password]).should be_nil
+      end
+      
+    end
+
+end  
+
+  end
 end
 
 
