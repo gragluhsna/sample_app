@@ -15,4 +15,11 @@ describe UsersController do
     end
   end
 
+  # describe "GET 'show' user" do
+  #   it "should be successful" do
+  #     get 'users/1'
+  #     response.should have_selector("span",:content=> "Anshul Garg")
+  #   end
+  # end
+
 end
