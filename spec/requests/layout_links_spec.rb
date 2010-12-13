@@ -43,4 +43,34 @@ describe "LayoutLinks" do
     end
     
   end    
+
+  describe "when not signed in" do
+    it "should have the sign in link for non logged in version" do
+      visit root_path
+      response.should have_selector("a" , :href => signin_path , :content => "Sign in")
+    end
+  
+  end
+
+  describe "when signed in" do
+    
+      before(:each) do
+        @user = Factory(:user)
+        visit signin_path
+        fill_in :email , :with => @user.email
+        fill_in :password , :with => @user.password
+        click_button
+      end
+    
+      it "should show sign out link" do
+        visit root_path
+        response.should have_selector("a" , :href => signout_path, :content => "Sign out")
+      end
+      
+      it "should have profile link" do
+        visit root_path
+        response.should have_selector("a", :href => user_path(@user),:content => "Profile")      
+      end
+  end
+  
 end
